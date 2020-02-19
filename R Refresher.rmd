@@ -1,0 +1,72 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 1 - Assignment 3
+## Farrell, Zach
+### R Refresher Assignment
+
+
+### install.packages("tidyverse")
+
+
+```{r}
+library(tidyverse)
+diamonddata = diamonds
+nrow(diamonddata)
+ncol(diamonddata)
+```
+```{r}
+ggplot(diamonddata, aes(x = carat, y = price)) +
+  geom_point()
+```
+### It seems as though the higher the Carat, the higher the Price.
+```{r}
+ggplot(diamonddata, aes(x = carat, y = price, color = cut)) +
+  geom_point()
+```
+### It seems as though the higher the Carat, the higher the Price.  Also, the more ideal the Cut, the higher the price.  Price positively correlates with both Carat and Cut.
+```{r}
+ggplot(diamonddata, aes(x = carat, y = price, color = cut)) +
+  geom_point() +
+  facet_wrap(~ color)
+
+```
+### It seems as though the higher the Carat, the higher the Price.  Also, the more ideal the Cut, the higher the price.  Also, the lower down the alphebet the Color is, the more expensive the diamonds are.  therefore, Price positively correlates with all Carat, Cut, and Color.
+```{r}
+library(readr)
+InventoryData <- read_csv("~/Desktop/Spring 20/MIS 502/Module 1/R and RStudio Refresher Assignment/InventoryData.csv")
+```
+```{r}
+inventoryA <- filter(InventoryData, Supplier == 'A')
+```
+
+```{r}
+nrow(inventoryA)
+```
+```{r}
+inventoryA = mutate(inventoryA, OnHandRatio = `On Hand` / `Annual Demand`)
+```
+### The line of code above makes a new column called OnHandRatio in the Dataset inventoryA that equals the On Hand column divided by the Annual Demand column.
+```{r}
+avg_cost <- inventoryA %>%
+  group_by("Item SKU") %>%
+  summarize(SKUAvgCost = mean('Cost per Unit ($)'))
+```
+### Task 9 was the most challenging because the column names have spaces and R didnt seem to recognize them as variables in inventoryA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

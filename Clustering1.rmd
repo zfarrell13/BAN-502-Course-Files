@@ -1,0 +1,134 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 6 - Assignment 1
+## Farrell, Zach
+### Clustering
+
+```{r}
+options(tidyverse.quiet=TRUE)
+library(tidyverse)
+library(cluster)
+library(factoextra)
+library(dendextend)
+```
+
+```{r}
+trucks <- read_csv("trucks.csv")
+```
+
+```{r}
+ggplot(trucks, aes(x = Distance, y = Speeding)) +
+  geom_point()
+```
+There seems to be clustering around the 50 mile mark, and between the 100 and 200 mile mark.
+
+```{r}
+trucks2 = trucks %>% select(c("Distance","Speeding"))
+trucks2 = scale(trucks2)
+as.data.frame(trucks2)
+```
+
+```{r}
+set.seed(1234)
+clusters1 <- kmeans(trucks2, 2)
+```
+
+```{r}
+fviz_cluster(clusters1, trucks2)
+```
+
+```{r}
+set.seed(123)
+fviz_nbclust(trucks2, kmeans, method = "wss")
+```
+4 is the optimal amount of clusters according to the wss method
+
+```{r}
+set.seed(123)
+fviz_nbclust(trucks2, kmeans, method = "silhouette")
+```
+4 is the optimal amount of clusters according to the silhouette method. the two methods are at a consensus.
+
+```{r}
+set.seed(1234)
+clusters2 <- kmeans(trucks2, 4)
+```
+
+```{r}
+fviz_cluster(clusters2, trucks2)
+```
+Cluster 1 includes people who are speeding at a higher degree of standard deviation than the average.  Cluster 2 includes people who dont speed as much, even if they are driving a long way.  Cluster 3 includes people who dont speed as much because they have shorter trips.  And finally Cluster 4 includes people who sometimes speed on long trips.
+
+```{r}
+wine <- read_csv("wineprice.csv")
+```
+
+```{r}
+wine2 = wine %>% select(c("Price","WinterRain","AGST","HarvestRain","Age"))
+wine2 = scale(wine2)
+as.data.frame(wine2)
+```
+
+```{r}
+set.seed(123)
+fviz_nbclust(wine2, kmeans, method = "wss")
+```
+
+```{r}
+set.seed(123)
+fviz_nbclust(wine2, kmeans, method = "silhouette")
+```
+It looks to me to be 4 or 5 based on the wss method, and it is 5 usint the silouette method.  so the consensus will be 5
+
+```{r}
+set.seed(1234)
+clusters3 <- kmeans(wine2, 5)
+```
+
+```{r}
+fviz_cluster(clusters3, wine2)
+```
+
+```{r}
+m = c( "average", "single", "complete", "ward")
+names(m) = c( "average", "single", "complete", "ward")
+
+ac = function(x) {
+  agnes(wine2, method = x)$ac
+}
+map_dbl(m, ac)
+```
+
+```{r}
+hc = agnes(wine2, method = "ward") 
+pltree(hc, cex = 0.6, hang = -1, main = "Agglomerative Dendrogram") 
+```
+
+```{r}
+hc2 = diana(wine2)
+pltree(hc2, cex = 0.6, hang = -1, main = "Divisive Dendogram")
+```
+
+```{r}
+plot(hc2, cex.axis= 0.5) 
+rect.hclust(hc2, k = 5, border = 2:6)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
